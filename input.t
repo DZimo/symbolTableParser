@@ -5,5 +5,10 @@ int c;
 void main()
 {
     int sum;
-    sum = a + c;
+    sum = add();
+}
+
+int add()
+{
+    return a+c;
 }

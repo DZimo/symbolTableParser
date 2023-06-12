@@ -102,5 +102,15 @@ int main() {
 
     // Print the JSON object
     std::cout << jsonObject.dump(4) << std::endl;
+
+    std::ofstream outputFile("output.json");
+
+        // Check if the file was opened successfully
+        if (!outputFile.is_open()) {
+            std::cerr << "Failed to open the output file." << std::endl;
+            return 1;
+        }
+    outputFile << jsonObject.dump(4);
+
     return 0;
 }
