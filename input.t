@@ -12,3 +12,13 @@ int add()
 {
     return a+c;
 }
+
+float subtract()
+{
+    return c-a;
+}
+
+boolean compare()
+{
+    return true;
+}
