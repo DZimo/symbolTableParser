@@ -3,20 +3,22 @@
 #include <string>
 #include <unordered_map>
 #include "nlohmann/json.hpp"
+using namespace std;
+
 
 using json = nlohmann::json;
 
 // Function to parse the C++ code and build the symbol table
-void parseCode(const std::string& filename, std::unordered_map<std::string, std::pair<std::string, int>>& symbolTable) {
-    std::ifstream file(filename);
+void parseCode(const std::string& fileToParse, std::unordered_map<std::string, std::pair<std::string, int>>& symbolTable) {
+    std::ifstream file(fileToParse);
     if (!file.is_open()) {
-        std::cerr << "Failed to open file: " << filename << std::endl;
+        std::cerr << "Failed to open file: " << fileToParse << std::endl;
         return;
     }
 
-    std::string line;
+    string line;
     int lineNumber = 1;
-    while (std::getline(file, line)) {
+    while (getline(file, line)) {
         // Skip empty lines and comments
         if ((line.empty() || line.find("//") || line.find("{") || line.find("}")) == 0) {
             lineNumber++;
@@ -24,7 +26,7 @@ void parseCode(const std::string& filename, std::unordered_map<std::string, std:
         }
 
         // Normal declaration or assignement
-        std::size_t pos;
+        size_t pos;
         pos = line.find(";");
         if (pos != std::string::npos) {
             std::string declaration = line.substr(0, pos);
@@ -45,6 +47,10 @@ void parseCode(const std::string& filename, std::unordered_map<std::string, std:
                 if (lastSpacePos != std::string::npos) {
                     std::string variable = declaration.substr(lastSpacePos + 1);
                     std::string type = declaration.substr(0, lastSpacePos);
+                    // Remove the whitespaces from type
+                    type.erase(std::remove_if(type.begin(), type.end(), ::isspace),
+                            type.end());
+
                     symbolTable[variable] = std::make_pair(type, lineNumber);
                 }
             }
@@ -90,10 +96,10 @@ json convertMapToJson(const std::unordered_map<std::string, std::pair<std::strin
 }
 
 int main() {
-    std::string filename = "input.t"; // Replace with the name of your C++ file
+    std::string fileToParse = "input.t"; // Script to parse
     std::unordered_map<std::string, std::pair<std::string, int>> symbolTable;
 
-    parseCode(filename, symbolTable);
+    parseCode(fileToParse, symbolTable);
     printSymbolTable(symbolTable);
 
 
